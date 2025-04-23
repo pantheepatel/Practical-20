@@ -29,15 +29,13 @@ namespace LogException.UnitOfWork
             _httpContextAccessor = httpContextAccessor;
         }
 
-        public async Task<int> CompleteAsync()
+        public async Task CompleteAsync()
         {
             var entries = _context.ChangeTracker.Entries()
                 .Where(e => e.State == EntityState.Added ||
                             e.State == EntityState.Modified ||
                             e.State == EntityState.Deleted)
                 .ToList();
-
-            var result = await _context.SaveChangesAsync();
 
             var userId = _httpContextAccessor.HttpContext.User?.Identity?.Name;
 
@@ -57,7 +55,6 @@ namespace LogException.UnitOfWork
             }
 
             await _context.SaveChangesAsync();
-            return result;
         }
 
         public void Dispose()
